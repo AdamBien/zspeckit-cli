@@ -13,15 +13,12 @@ import airhacks.specify.workspace.entity.FeaturePaths;
 /// Repository and feature-state resolution — the Java port of the shared logic in
 /// `common.sh`. All JSON I/O goes through the vendored `org.json` (zjson), replacing
 /// the bash `jq` -> `python3` -> `grep/sed` cascade with a single robust path.
-public final class Workspace {
-
-    private Workspace() {
-    }
+public interface Workspace {
 
     /// Walk upward from the current working directory looking for the `.specify`
     /// marker directory (mirrors `find_specify_root`/`get_repo_root`). Falls back to
     /// the current working directory when no marker is found.
-    public static Path repoRoot() {
+    static Path repoRoot() {
         var dir = Path.of("").toAbsolutePath();
         for (var current = dir; current != null; current = current.getParent()) {
             if (Files.isDirectory(current.resolve(".specify"))) {
@@ -33,13 +30,13 @@ public final class Workspace {
 
     /// The active feature name from the `SPECIFY_FEATURE` environment variable, or
     /// empty when unset (resolution then relies on `feature.json`).
-    public static String currentBranch() {
+    static String currentBranch() {
         return Optional.ofNullable(System.getenv("SPECIFY_FEATURE")).orElse("");
     }
 
     /// Read `.specify/feature.json`'s `feature_directory` value, or empty when the
     /// file is missing, unparseable, or lacks the key.
-    public static Optional<String> readFeatureDirectory(Path repoRoot) {
+    static Optional<String> readFeatureDirectory(Path repoRoot) {
         var featureJson = repoRoot.resolve(".specify/feature.json");
         if (!Files.isRegularFile(featureJson)) {
             return Optional.empty();
@@ -48,14 +45,14 @@ public final class Workspace {
             var json = new JSONObject(Files.readString(featureJson));
             var value = json.optString("feature_directory", "");
             return value.isBlank() ? Optional.empty() : Optional.of(value);
-        } catch (IOException | RuntimeException parseFailure) {
+        } catch (IOException | RuntimeException _) {
             return Optional.empty();
         }
     }
 
     /// Persist `feature_directory` to `.specify/feature.json`, storing the path
     /// relative to the repo root. Skips the write when the stored value is unchanged.
-    public static void persistFeatureDirectory(Path repoRoot, Path featureDir) {
+    static void persistFeatureDirectory(Path repoRoot, Path featureDir) {
         var relative = featureDir.isAbsolute() && featureDir.startsWith(repoRoot)
                 ? repoRoot.relativize(featureDir).toString()
                 : featureDir.toString();
@@ -75,7 +72,7 @@ public final class Workspace {
     /// Resolve all feature paths, honoring `SPECIFY_FEATURE_DIRECTORY` first, then
     /// `feature.json` (mirrors `get_feature_paths`). Throws when no feature context
     /// can be determined.
-    public static FeaturePaths featurePaths() {
+    static FeaturePaths featurePaths() {
         var repoRoot = repoRoot();
         var override = System.getenv("SPECIFY_FEATURE_DIRECTORY");
         if (override != null && !override.isBlank()) {
@@ -89,7 +86,7 @@ public final class Workspace {
         return FeaturePaths.of(repoRoot, currentBranch(), absolutize(repoRoot, stored));
     }
 
-    private static Path absolutize(Path repoRoot, String value) {
+    static Path absolutize(Path repoRoot, String value) {
         var path = Path.of(value);
         return path.isAbsolute() ? path : repoRoot.resolve(path);
     }

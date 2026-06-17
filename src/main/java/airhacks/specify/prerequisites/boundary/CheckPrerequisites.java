@@ -85,7 +85,7 @@ public final class CheckPrerequisites {
         return 0;
     }
 
-    private static void emitPaths(boolean json, FeaturePaths paths) {
+    static void emitPaths(boolean json, FeaturePaths paths) {
         if (json) {
             var payload = new JSONObject()
                     .put("REPO_ROOT", paths.repoRoot().toString())
@@ -107,9 +107,7 @@ public final class CheckPrerequisites {
 
     /// Optional design documents present in the feature directory, in the order
     /// `check-prerequisites.sh` reports them.
-    static final class Documents {
-        private Documents() {
-        }
+    interface Documents {
 
         static List<String> list(FeaturePaths paths) {
             var docs = new ArrayList<String>();
@@ -128,7 +126,7 @@ public final class CheckPrerequisites {
             return docs;
         }
 
-        private static boolean hasEntries(Path dir) {
+        static boolean hasEntries(Path dir) {
             try (Stream<Path> entries = Files.list(dir)) {
                 return entries.findAny().isPresent();
             } catch (IOException listFailure) {

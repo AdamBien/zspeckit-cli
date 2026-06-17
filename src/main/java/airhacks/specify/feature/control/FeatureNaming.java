@@ -5,7 +5,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -13,25 +12,22 @@ import java.util.stream.Stream;
 /// Branch/directory name derivation and sequential numbering — the Java port of the
 /// shell helpers in `create-new-feature.sh` (`clean_branch_name`,
 /// `generate_branch_name`, `get_highest_from_specs`).
-public final class FeatureNaming {
+public interface FeatureNaming {
 
-    private static final Set<String> STOP_WORDS = Set.of(
+    Set<String> STOP_WORDS = Set.of(
             "i", "a", "an", "the", "to", "for", "of", "in", "on", "at", "by", "with",
             "from", "is", "are", "was", "were", "be", "been", "being", "have", "has",
             "had", "do", "does", "did", "will", "would", "should", "could", "can",
             "may", "might", "must", "shall", "this", "that", "these", "those", "my",
             "your", "our", "their", "want", "need", "add", "get", "set");
 
-    private static final Pattern SEQUENTIAL = Pattern.compile("^[0-9]{3,}-.*");
-    private static final Pattern TIMESTAMP = Pattern.compile("^[0-9]{8}-[0-9]{6}-.*");
-    private static final Pattern LEADING_NUMBER = Pattern.compile("^([0-9]+).*");
-
-    private FeatureNaming() {
-    }
+    Pattern SEQUENTIAL = Pattern.compile("^[0-9]{3,}-.*");
+    Pattern TIMESTAMP = Pattern.compile("^[0-9]{8}-[0-9]{6}-.*");
+    Pattern LEADING_NUMBER = Pattern.compile("^([0-9]+).*");
 
     /// Lowercase, replace every non-alphanumeric run with a single hyphen, trim
     /// leading/trailing hyphens (mirrors `clean_branch_name`).
-    public static String clean(String name) {
+    static String clean(String name) {
         return name.toLowerCase()
                 .replaceAll("[^a-z0-9]", "-")
                 .replaceAll("-+", "-")
@@ -40,7 +36,7 @@ public final class FeatureNaming {
 
     /// Derive a 3-4 word slug from a free-text description, dropping stop words and
     /// short tokens (mirrors `generate_branch_name`, including its fallback).
-    public static String fromDescription(String description) {
+    static String fromDescription(String description) {
         var meaningful = new ArrayList<String>();
         for (var word : description.toLowerCase().replaceAll("[^a-z0-9]", " ").split("\\s+")) {
             if (word.isEmpty() || STOP_WORDS.contains(word)) {
@@ -65,7 +61,7 @@ public final class FeatureNaming {
 
     /// Highest sequential prefix among `specs/` subdirectories, ignoring timestamp
     /// directories (mirrors `get_highest_from_specs`).
-    public static int highestFeatureNumber(Path specsDir) {
+    static int highestFeatureNumber(Path specsDir) {
         if (!Files.isDirectory(specsDir)) {
             return 0;
         }
@@ -81,7 +77,7 @@ public final class FeatureNaming {
         }
     }
 
-    private static int leadingNumber(String dirName) {
+    static int leadingNumber(String dirName) {
         var matcher = LEADING_NUMBER.matcher(dirName);
         return matcher.matches() ? Integer.parseInt(matcher.group(1)) : 0;
     }

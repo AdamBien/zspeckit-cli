@@ -7,7 +7,7 @@ import airhacks.specify.prerequisites.boundary.SetupTasks;
 /// Dispatches on the first argument to the matching subcommand; remaining arguments
 /// keep the exact flag/`--json` contract the original scripts exposed.
 void main(String[] args) {
-    var version = "2026-06-17.1";
+    var version = "2026-06-17.2";
     if (args.length == 0) {
         printUsage(version);
         System.exit(1);

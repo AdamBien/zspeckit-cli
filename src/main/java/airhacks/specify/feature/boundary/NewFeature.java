@@ -103,7 +103,7 @@ public final class NewFeature {
         return 0;
     }
 
-    private static void createFeature(Path repoRoot, Path featureDir, Path specFile) {
+    static void createFeature(Path repoRoot, Path featureDir, Path specFile) {
         try {
             Files.createDirectories(featureDir);
             if (!Files.exists(specFile)) {
@@ -121,7 +121,7 @@ public final class NewFeature {
         }
     }
 
-    private static String truncate(String branchName, String featureNum) {
+    static String truncate(String branchName, String featureNum) {
         if (branchName.length() <= MAX_BRANCH_LENGTH) {
             return branchName;
         }
@@ -133,7 +133,7 @@ public final class NewFeature {
         return result;
     }
 
-    private static void emit(boolean json, boolean dryRun, String branchName, Path specFile, String featureNum) {
+    static void emit(boolean json, boolean dryRun, String branchName, Path specFile, String featureNum) {
         if (json) {
             var payload = new JSONObject()
                     .put("BRANCH_NAME", branchName)
@@ -150,7 +150,7 @@ public final class NewFeature {
         }
     }
 
-    private static void printHelp() {
+    static void printHelp() {
         IO.println("""
                 Usage: new-feature [--json] [--dry-run] [--allow-existing-branch] \
                 [--short-name <name>] [--number N] [--timestamp] <feature_description>""");

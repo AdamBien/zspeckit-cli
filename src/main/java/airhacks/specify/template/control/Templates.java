@@ -19,12 +19,9 @@ import org.json.JSONObject;
 /// The YAML-based composition stack (`resolve_template_content`) is intentionally
 /// not ported: no command here uses it, and `org.json` does not parse YAML. Add a
 /// minimal YAML reader if preset composition is ever required.
-public final class Templates {
+public interface Templates {
 
-    private Templates() {
-    }
-
-    public static Optional<Path> resolve(String templateName, Path repoRoot) {
+    static Optional<Path> resolve(String templateName, Path repoRoot) {
         var base = repoRoot.resolve(".specify/templates");
 
         var override = base.resolve("overrides/" + templateName + ".md");
@@ -46,7 +43,7 @@ public final class Templates {
         return Files.isRegularFile(core) ? Optional.of(core) : Optional.empty();
     }
 
-    private static Optional<Path> resolveFromPresets(String templateName, Path presetsDir) {
+    static Optional<Path> resolveFromPresets(String templateName, Path presetsDir) {
         if (!Files.isDirectory(presetsDir)) {
             return Optional.empty();
         }
@@ -62,7 +59,7 @@ public final class Templates {
     /// Preset ids ordered by `.registry` priority (lower number wins), skipping
     /// disabled entries. Falls back to alphabetical directory order when the
     /// registry is missing or unparseable.
-    private static List<String> presetIdsByPriority(Path presetsDir) {
+    static List<String> presetIdsByPriority(Path presetsDir) {
         var registry = presetsDir.resolve(".registry");
         if (Files.isRegularFile(registry)) {
             try {
@@ -78,14 +75,14 @@ public final class Templates {
                             .map(entry -> entry.getString("id"))
                             .toList();
                 }
-            } catch (IOException | RuntimeException ignored) {
+            } catch (IOException | RuntimeException _) {
                 // fall through to alphabetical scan
             }
         }
         return childDirectoryNames(presetsDir);
     }
 
-    private static Optional<Path> resolveFromExtensions(String templateName, Path extensionsDir) {
+    static Optional<Path> resolveFromExtensions(String templateName, Path extensionsDir) {
         if (!Files.isDirectory(extensionsDir)) {
             return Optional.empty();
         }
@@ -101,7 +98,7 @@ public final class Templates {
         return Optional.empty();
     }
 
-    private static List<String> childDirectoryNames(Path dir) {
+    static List<String> childDirectoryNames(Path dir) {
         try (Stream<Path> children = Files.list(dir)) {
             return children.filter(Files::isDirectory)
                     .map(path -> path.getFileName().toString())
