@@ -1,0 +1,14 @@
+#!/usr/bin/env -S java --class-path=zbo/zspeckit-cli.jar --source 25
+
+/// Convenience wrapper for the `setup-plan` subcommand. The shebang puts
+/// `zspeckit-cli.jar` on the classpath, so the boundary class is called directly in
+/// this same JVM — no `java -jar` subprocess. `run` returns the exit code unchanged,
+/// keeping the wrapper transparent for `--json` output.
+/// Note: the classpath is resolved relative to the current directory, so run from the
+/// project root (or adjust the path / install the jar at a fixed location).
+
+import airhacks.specify.prerequisites.boundary.SetupPlan;
+
+void main(String... args) {
+    System.exit(new SetupPlan().run(args));
+}
