@@ -1,0 +1,6 @@
+sources.dir=src/main/java
+resources.dir=src/main/resources
+classes.dir=<temp.dir>
+jar.dir=zbo/
+jar.file.name=zspeckit-cli.jar
+post.build.hook=zunit
