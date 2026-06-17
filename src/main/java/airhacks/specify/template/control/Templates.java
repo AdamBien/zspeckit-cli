@@ -1,15 +1,6 @@
 package airhacks.specify.template.control;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Stream;
-
+import module java.base;
 import org.json.JSONObject;
 
 /// Path-only template resolution, porting `common.sh`'s `resolve_template`. Search
@@ -103,7 +94,7 @@ public interface Templates {
             return children.filter(Files::isDirectory)
                     .map(path -> path.getFileName().toString())
                     .sorted()
-                    .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
+                    .toList();
         } catch (IOException listFailure) {
             throw new UncheckedIOException(listFailure);
         }

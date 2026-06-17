@@ -1,16 +1,9 @@
 package airhacks.specify.prerequisites.boundary;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
+import module java.base;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import airhacks.specify.prerequisites.control.DesignDocuments;
 import airhacks.specify.workspace.control.Workspace;
 import airhacks.specify.workspace.entity.FeaturePaths;
 
@@ -67,7 +60,7 @@ public final class CheckPrerequisites {
             return 1;
         }
 
-        var docs = Documents.list(paths);
+        var docs = DesignDocuments.list(paths);
         if (includeTasks && Files.isRegularFile(paths.tasks())) {
             docs.add("tasks.md");
         }
@@ -80,7 +73,7 @@ public final class CheckPrerequisites {
         } else {
             IO.println("FEATURE_DIR:" + paths.featureDir());
             IO.println("AVAILABLE_DOCS:");
-            docs.forEach(doc -> IO.println("  ✓ " + doc));
+            printBullets(docs);
         }
         return 0;
     }
@@ -105,33 +98,10 @@ public final class CheckPrerequisites {
         }
     }
 
-    /// Optional design documents present in the feature directory, in the order
-    /// `check-prerequisites.sh` reports them.
-    interface Documents {
-
-        static List<String> list(FeaturePaths paths) {
-            var docs = new ArrayList<String>();
-            if (Files.isRegularFile(paths.research())) {
-                docs.add("research.md");
-            }
-            if (Files.isRegularFile(paths.dataModel())) {
-                docs.add("data-model.md");
-            }
-            if (Files.isDirectory(paths.contractsDir()) && hasEntries(paths.contractsDir())) {
-                docs.add("contracts/");
-            }
-            if (Files.isRegularFile(paths.quickstart())) {
-                docs.add("quickstart.md");
-            }
-            return docs;
+    static void printBullets(List<String> docs) {
+        if (docs.isEmpty()) {
+            return;
         }
-
-        static boolean hasEntries(Path dir) {
-            try (Stream<Path> entries = Files.list(dir)) {
-                return entries.findAny().isPresent();
-            } catch (IOException listFailure) {
-                throw new UncheckedIOException(listFailure);
-            }
-        }
+        IO.println(docs.stream().map(doc -> "  ✓ " + doc).collect(Collectors.joining("\n")));
     }
 }

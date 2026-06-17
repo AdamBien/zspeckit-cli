@@ -1,15 +1,7 @@
 package airhacks.specify.feature.boundary;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-
+import module java.base;
 import org.json.JSONObject;
-
 import airhacks.specify.feature.control.FeatureNaming;
 import airhacks.specify.template.control.Templates;
 import airhacks.specify.workspace.control.Workspace;
@@ -19,8 +11,8 @@ import airhacks.specify.workspace.control.Workspace;
 /// to `feature.json`, and emits `BRANCH_NAME`/`SPEC_FILE`/`FEATURE_NUM`.
 public final class NewFeature {
 
-    private static final int MAX_BRANCH_LENGTH = 244;
-    private static final DateTimeFormatter TIMESTAMP = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
+    static final int MAX_BRANCH_LENGTH = 244;
+    static final DateTimeFormatter TIMESTAMP = DateTimeFormatter.ofPattern("yyyyMMdd-HHmmss");
 
     public int run(String[] args) {
         var json = false;

@@ -1,11 +1,7 @@
 package airhacks.specify.prerequisites.boundary;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-
+import module java.base;
 import org.json.JSONObject;
-
 import airhacks.specify.template.control.Templates;
 import airhacks.specify.workspace.control.Workspace;
 import airhacks.specify.workspace.entity.FeaturePaths;

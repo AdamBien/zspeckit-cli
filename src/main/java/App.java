@@ -3,17 +3,17 @@ import airhacks.specify.prerequisites.boundary.CheckPrerequisites;
 import airhacks.specify.prerequisites.boundary.SetupPlan;
 import airhacks.specify.prerequisites.boundary.SetupTasks;
 
-/// Single executable entry point replacing the five `.specify/scripts/bash` scripts.
+/// AppSingle executable entry point replacing the five `.specify/scripts/bash` scripts.
 /// Dispatches on the first argument to the matching subcommand; remaining arguments
 /// keep the exact flag/`--json` contract the original scripts exposed.
 void main(String[] args) {
-    var version = "2026-06-17.2";
+    var version = "2026-06-17.3";
     if (args.length == 0) {
         printUsage(version);
         System.exit(1);
     }
 
-    var rest = java.util.Arrays.copyOfRange(args, 1, args.length);
+    var rest = Arrays.copyOfRange(args, 1, args.length);
     var exitCode = switch (args[0]) {
         case "new-feature", "create-new-feature" -> new NewFeature().run(rest);
         case "check-prerequisites" -> new CheckPrerequisites().run(rest);

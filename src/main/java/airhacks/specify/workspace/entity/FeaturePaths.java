@@ -1,6 +1,6 @@
 package airhacks.specify.workspace.entity;
 
-import java.nio.file.Path;
+import module java.base;
 
 /// Resolved locations for the active feature, mirroring the variables emitted by
 /// `common.sh`'s `get_feature_paths`. `currentBranch` may be empty when no

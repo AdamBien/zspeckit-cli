@@ -1,13 +1,7 @@
 package airhacks.specify.workspace.control;
 
-import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.Optional;
-
+import module java.base;
 import org.json.JSONObject;
-
 import airhacks.specify.workspace.entity.FeaturePaths;
 
 /// Repository and feature-state resolution — the Java port of the shared logic in

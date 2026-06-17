@@ -1,10 +1,9 @@
 package airhacks.specify.prerequisites.boundary;
 
-import java.nio.file.Files;
-
+import module java.base;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
+import airhacks.specify.prerequisites.control.DesignDocuments;
 import airhacks.specify.template.control.Templates;
 import airhacks.specify.workspace.control.Workspace;
 import airhacks.specify.workspace.entity.FeaturePaths;
@@ -53,7 +52,7 @@ public final class SetupTasks {
             return 1;
         }
 
-        var docs = CheckPrerequisites.Documents.list(paths);
+        var docs = DesignDocuments.list(paths);
 
         if (json) {
             var payload = new JSONObject()
@@ -65,7 +64,7 @@ public final class SetupTasks {
             IO.println("FEATURE_DIR: " + paths.featureDir());
             IO.println("TASKS_TEMPLATE: " + tasksTemplate.get());
             IO.println("AVAILABLE_DOCS:");
-            docs.forEach(doc -> IO.println("  ✓ " + doc));
+            CheckPrerequisites.printBullets(docs);
         }
         return 0;
     }

@@ -2,12 +2,7 @@ package airhacks.specify.feature.control;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
+import module java.base;
 
 /// Branch/directory name derivation and sequential numbering — the Java port of the
 /// shell helpers in `create-new-feature.sh` (`clean_branch_name`,
