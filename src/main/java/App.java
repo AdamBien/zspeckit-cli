@@ -3,11 +3,11 @@ import airhacks.specify.prerequisites.boundary.CheckPrerequisites;
 import airhacks.specify.prerequisites.boundary.SetupPlan;
 import airhacks.specify.prerequisites.boundary.SetupTasks;
 
-/// AppSingle executable entry point replacing the five `.specify/scripts/bash` scripts.
+/// Single executable entry point replacing the five `.specify/scripts/bash` scripts.
 /// Dispatches on the first argument to the matching subcommand; remaining arguments
 /// keep the exact flag/`--json` contract the original scripts exposed.
 void main(String[] args) {
-    var version = "2026-06-17.3";
+    var version = version();
     if (args.length == 0) {
         printUsage(version);
         System.exit(1);
@@ -28,6 +28,24 @@ void main(String[] args) {
         }
     };
     System.exit(exitCode);
+}
+
+/// Resolve the version from the bundled `version.txt` classpath resource (the path
+/// in the packaged JAR), falling back to the project-root file when running from
+/// source. `version.txt` is maintained by `zbump` and is the single source of truth.
+String version() {
+    try (var resource = NewFeature.class.getResourceAsStream("/version.txt")) {
+        if (resource != null) {
+            return new String(resource.readAllBytes()).strip();
+        }
+    } catch (IOException _) {
+        // fall through to the filesystem lookup
+    }
+    try {
+        return Files.readString(Path.of("version.txt")).strip();
+    } catch (IOException _) {
+        return "unknown";
+    }
 }
 
 void printUsage(String version) {
