@@ -157,3 +157,12 @@ java -jar zbo/zspeckit-cli.jar new-feature --help
 ## Drop-in replacement for `.specify/scripts/bash/`
 
 Spec-kit's slash commands shell out to `.specify/scripts/bash/<name>.sh`. Symlink each `<name>.sh` to the matching launcher above to swap the bash chain for these scripts — Claude Code skills will keep working unchanged.
+
+## References
+
+- [bce.design](https://bce.design) — Boundary-Control-Entity architecture
+- [airails.dev](https://airails.dev) — agentic engineering with Claude Code and skills
+
+---
+
+See you at the [airhacks.live](https://airhacks.live) and [airhacks.university](https://airhacks.university) workshops.
