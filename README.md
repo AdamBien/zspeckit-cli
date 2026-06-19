@@ -15,6 +15,55 @@ Four single-file Java 25 launchers live at the project root, each backed by the 
 
 Script filenames carry no dashes — Java source-file mode rejects `-` in a launched file's name — so each maps to its hyphenated subcommand as shown.
 
+## Workflow
+
+A feature moves through four phases — specify, plan, tasks, implement. Each Claude Code slash command (arrow labels) drives one phase, and the zspeckit-cli launchers (blue) scaffold it, producing the artifact (yellow) the next phase consumes. The example carried through is a *show current time* feature.
+
+```mermaid
+flowchart TD
+    Idea([💡 Feature idea:<br/>show current time])
+
+    subgraph Specify["1 · Specify"]
+        NewFeature([newfeature<br/>new-feature])
+        Spec([spec.md<br/>WHAT &amp; WHY:<br/>display current time])
+        NewFeature -->|scaffolds| Spec
+    end
+
+    subgraph Plan["2 · Plan"]
+        SetupPlan([setupplan<br/>setup-plan])
+        PlanDoc([plan.md<br/>HOW:<br/>format, timezone, output])
+        SetupPlan -->|seeds| PlanDoc
+    end
+
+    subgraph Tasks["3 · Tasks"]
+        SetupTasks([setuptasks<br/>setup-tasks])
+        TasksDoc([tasks.md<br/>steps:<br/>read clock, format, print])
+        SetupTasks -->|derives| TasksDoc
+    end
+
+    subgraph Implement["4 · Implement"]
+        Check([checkprerequisites<br/>check-prerequisites])
+        Code([code + tests<br/>now → HH:mm:ss])
+        Check -->|validates scaffold| Code
+    end
+
+    Done([✅ Feature shipped:<br/>show current time])
+
+    Idea -->|/speckit-specify| Specify
+    Spec -.->|/speckit-clarify<br/>optional| Spec
+    Specify -->|/speckit-plan| Plan
+    Plan -->|/speckit-tasks| Tasks
+    Tasks -->|/speckit-implement| Implement
+    Implement --> Done
+
+    classDef stage fill:#dae8fc,stroke:#6c8ebf,color:#000
+    classDef artifact fill:#fff2cc,stroke:#d6b656,color:#000
+    classDef milestone fill:#d5e8d4,stroke:#82b366,color:#000
+    class NewFeature,SetupPlan,SetupTasks,Check stage
+    class Spec,PlanDoc,TasksDoc,Code artifact
+    class Idea,Done milestone
+```
+
 ## Prerequisites
 
 - Java 25+
