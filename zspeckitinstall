@@ -1,0 +1,68 @@
+#!/usr/bin/env -S java --source 25
+
+import module java.net.http;
+
+String name = MethodHandles.lookup().lookupClass().getName();
+String version = "2026.06.19.01";
+
+String baseUrl = "https://github.com/AdamBien/zspeckit-cli/releases/latest/download";
+String jarName = "zspeckit-cli.jar";
+List<String> scripts = List.of("checkprerequisites", "newfeature", "setupplan", "setuptasks", "zspecify");
+
+/// Installs zspeckit-cli into a target project: the JAR lands in `<project>/zbo/`
+/// and the convenience scripts in `<project>/`. The wrapper shebangs use a
+/// relative `--class-path=zbo/zspeckit-cli.jar`, so the scripts must be invoked
+/// from the project root that holds `zbo/` — exactly where this installer places
+/// them.
+///
+/// The target project is the single operand and defaults to the current
+/// directory. Per the `/java-cli-script` convention the version is the first
+/// line of normal output rather than a `-version` flag.
+void main(String... args) throws Exception {
+    IO.println("%s %s".formatted(name, version));
+    var project = Path.of(args.length > 0 ? args[0] : ".");
+    if (!Files.isDirectory(project)) {
+        System.err.println("%s: target project is not a directory: %s".formatted(name, project));
+        System.exit(1);
+    }
+    IO.println("%s: installing into %s".formatted(name, project.toAbsolutePath().normalize()));
+    install(baseUrl + "/" + jarName, project.resolve("zbo").resolve(jarName), false);
+    for (var script : scripts) {
+        install(baseUrl + "/" + script, project.resolve(script), true);
+    }
+}
+
+void install(String url, Path destination, boolean executable) throws Exception {
+    IO.println("%s: fetching %s".formatted(name, url));
+    download(url, destination);
+    if (executable) {
+        destination.toFile().setExecutable(true, false);
+    }
+    IO.println("%s: installed %s (%d bytes)".formatted(name, destination, Files.size(destination)));
+}
+
+/// Atomic-replace: `destination` either keeps its previous content or becomes
+/// the fully-downloaded payload, never a half-written stream.
+///
+/// The `.part` staging file lives next to `destination`, not in the system
+/// temp directory, so [Files#move] with [StandardCopyOption#ATOMIC_MOVE]
+/// cannot fail with a cross-device link error on hosts where `/tmp` sits on
+/// a different filesystem. [Path#toAbsolutePath] is what makes the lookup
+/// work for a bare filename — its relative parent is null.
+///
+/// Exit-on-failure on non-200 is deliberate — a single-file script has no
+/// caller to unwind to.
+void download(String url, Path destination) throws Exception {
+    var parent = destination.toAbsolutePath().getParent();
+    Files.createDirectories(parent);
+    var staging = Files.createTempFile(parent, destination.getFileName() + "-", ".part");
+    var client = HttpClient.newBuilder().followRedirects(HttpClient.Redirect.ALWAYS).build();
+    var request = HttpRequest.newBuilder(URI.create(url)).build();
+    var response = client.send(request, HttpResponse.BodyHandlers.ofFile(staging));
+    if (response.statusCode() != HttpURLConnection.HTTP_OK) {
+        Files.deleteIfExists(staging);
+        System.err.println("%s: download failed (HTTP %d)".formatted(name, response.statusCode()));
+        System.exit(1);
+    }
+    Files.move(staging, destination, StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+}

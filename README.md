@@ -28,6 +28,21 @@ zb
 
 Produces `zbo/zspeckit-cli.jar`.
 
+## Install
+
+[`zspeckitinstall`](zspeckitinstall) is a single-file Java 25 script (shebang-launched, no `.java` extension, see the [AIrails.dev](https://airails.dev) `java-cli-script` skill) — no JAR, no build — that downloads the latest release and drops it into a project: the JAR into `<project>/zbo/zspeckit-cli.jar` and the launchers into `<project>/`. The target project is the operand and defaults to the current directory.
+
+Fetch the installer from the [releases page](https://github.com/AdamBien/zspeckit-cli/releases/latest), make it executable, and run it:
+
+```
+curl -fLO https://github.com/AdamBien/zspeckit-cli/releases/latest/download/zspeckitinstall
+chmod +x zspeckitinstall
+./zspeckitinstall            # install into the current directory
+./zspeckitinstall my-project # install into ./my-project
+```
+
+Each download is atomic — a failed fetch never leaves a half-written file. Run the launchers from the project root, since their shebang resolves `zbo/zspeckit-cli.jar` relative to the working directory.
+
 ## Bootstrap a project
 
 `zspecify` scaffolds a spec-kit project from the upstream [spec-kit](https://github.com/github/spec-kit) repo. It needs only Java 25 and network access — no JAR, no build. It fetches the templates and bash helpers into `.specify/` and renders spec-kit's commands into Claude Code skills under `.claude/skills/speckit-*`.
