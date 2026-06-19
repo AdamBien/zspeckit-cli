@@ -1,6 +1,6 @@
 # zspeckit-cli
 
-Zero-dependency Java 25 replacement for the bash helpers in `.specify/scripts/bash/` that spec-kit ships. Four single-file Java 25 launchers backed by one executable JAR, identical CLI contract — `--json` output, exit codes, flags.
+Zero-dependency Java 25 replacement for the bash helpers in `.specify/scripts/bash/` that spec-kit ships. Four single-file Java 25 launchers backed by one executable JAR, identical CLI contract — `--json` output, exit codes, flags. A companion launcher, `zspecify`, bootstraps a spec-kit project from upstream.
 
 ## Commands
 
@@ -27,6 +27,18 @@ zb
 ```
 
 Produces `zbo/zspeckit-cli.jar`.
+
+## Bootstrap a project
+
+`zspecify` scaffolds a spec-kit project from the upstream [spec-kit](https://github.com/github/spec-kit) repo. It needs only Java 25 and network access — no JAR, no build. It fetches the templates and bash helpers into `.specify/` and renders spec-kit's commands into Claude Code skills under `.claude/skills/speckit-*`.
+
+```
+./zspecify init my-project
+./zspecify init --here              # scaffold the current directory
+./zspecify init my-project --ref v0.10.2
+```
+
+Flags: `--here` (use the current directory), `--force` (overwrite existing files), `--ref REF` (git ref to fetch, default `main`). Open the result with Claude Code and run `/speckit-constitution`.
 
 ## Run
 
