@@ -40,5 +40,6 @@ jobs:
             setupplan \
             setuptasks \
             zspecify \
+            zspeckitinstall \
             --title "zspeckit-cli ${{ steps.version.outputs.version }} (build ${{ github.run_number }})" \
             --generate-notes
