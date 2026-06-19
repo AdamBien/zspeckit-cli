@@ -37,9 +37,11 @@ Fetch the installer from the [releases page](https://github.com/AdamBien/zspecki
 ```
 curl -fLO https://github.com/AdamBien/zspeckit-cli/releases/latest/download/zspeckitinstall
 chmod +x zspeckitinstall
+```
+
 ./zspeckitinstall            # install into the current directory
 ./zspeckitinstall my-project # install into ./my-project
-```
+
 
 Each download is atomic — a failed fetch never leaves a half-written file. Run the launchers from the project root, since their shebang resolves `zbo/zspeckit-cli.jar` relative to the working directory.
 
