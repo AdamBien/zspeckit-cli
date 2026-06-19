@@ -2,6 +2,19 @@
 
 Zero-dependency Java 25 replacement for the bash helpers in `.specify/scripts/bash/` that spec-kit ships. Four single-file Java 25 launchers backed by one executable JAR, identical CLI contract — `--json` output, exit codes, flags. A companion launcher, `zspecify`, bootstraps a spec-kit project from upstream.
 
+## Why
+
+The original spec-kit helpers are ~1,245 lines of bash across five files, leaning on an implicit Unix toolchain — `bash`, `git`, and `jq` (the last rarely installed by default, so it fails mid-feature with a cryptic error). They build JSON by hand with `printf` and a custom escaper, and three of them `eval` internally generated strings — an avoidable code-execution surface over branch names and paths.
+
+zspeckit-cli replaces that with the same CLI contract on a single runtime assumption — **Java 25, and nothing else**:
+
+- **Fewer dependencies** — no `jq`, no shelled-out `git`, no `sed`/`awk` quoting footguns. If `java` runs, it works.
+- **Safer** — no `eval`, no subprocesses, and JSON handled by an audited library instead of hand-rolled `printf` escaping.
+- **Less code to maintain** — ~800 lines of structured [BCE](https://bce.design) Java (boundary/control/entity) versus ~1,245 lines of bash with a 582-line `common.sh` grab-bag.
+- **No build step to run it** — the launchers are `--source 25` shebang scripts; the prebuilt JAR is fetched, not compiled.
+
+Assuming Java 25 is present, the result wins or ties the bash original on installation convenience, security, code size, and simplicity.
+
 ## Commands
 
 Four single-file Java 25 launchers live at the project root, each backed by the JAR:
